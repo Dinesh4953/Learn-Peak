@@ -1,0 +1,35 @@
+.video-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  
+  /* .video-link {
+  position: relative;
+  display: inline-block;   // keeps the link only as wide as the thumbnail //
+} 
+*/
+
+ .video-wrapper img {
+  display: block;
+  width: 320px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.youtube-icon-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 70px;
+  color: #ff0000;
+  opacity: 0.9;
+  pointer-events: none; /* allows clicks to go through to the link */
+}
+
+.video-wrapper:hover .youtube-icon-overlay {
+  transform: translate(-50%, -50%) scale(1.1);
+  opacity: 1;
+}

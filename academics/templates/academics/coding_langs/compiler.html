@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+</head>
+<body class="bg-light">
+
+
+  <div class="container py-2">
+    <h2 class="text-primary mb-4">Python Compiler</h2>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post" action="{% url 'run_code' %}">
+          {% csrf_token %}
+          
+          <div class="mb-4">
+            <label for="code" class="form-label"><strong>Write Python Code:</strong></label>
+            <textarea name="code" id="code" rows="8" class="form-control" placeholder="print('Hello!')" required>{{ code|default:"print('Hello!')" }}</textarea>
+          </div>
+
+          {% comment %} <div class="mb-4">
+            <label for="inp" class="form-label"><strong>Input (optional):</strong></label>
+            <textarea name="inp" id="inp" rows="3" class="form-control" placeholder="e.g., 5\n10">{{ inp|default:"" }}</textarea>
+          </div> {% endcomment %}
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg px-5">Run Code</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if output %}
+    <div class="mt-4">
+      <h5 class="text-secondary">Output:</h5>
+      <pre class="bg-dark text-white p-4 rounded">{{ output }}</pre>
+    </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

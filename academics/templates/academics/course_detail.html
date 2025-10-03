@@ -1,0 +1,269 @@
+{% extends 'academics/base.html' %}
+{% block body %}
+<div class="container py-5">
+  <h1 class="display-3 text-primary fw-bold mb-4">{{ course.name }}</h1>
+  <p class="lead fs-4">{{ course.description }}</p>
+
+  {% for topic in topics %}
+    <div class="mb-5">
+      {% if topic.title %}
+        <h2 class="fw-bold display-6">📘 {{ topic.title|safe|linebreaksbr }}</h2>
+      {% endif %}
+
+      {% if topic.content %}
+        <div class="fs-5 lh-lg">
+          {{ topic.content|safe }}
+        </div>
+      {% endif %}
+
+      {% if topic.image %}
+        <img src="{{ topic.image.url }}" class="img-fluid rounded my-3 border" style="max-width: 60%; height: auto;" alt="Topic Image">
+      {% endif %}
+
+      {% if topic.example_code %}
+        <h5 class="mt-4">Example Code:</h5>
+        <pre class="bg-dark text-white p-4 rounded fs-5" style="white-space: pre-wrap; tab-size: 4;">
+<code>{{ topic.example_code|escape|safe }}</code></pre>
+      {% endif %}
+
+      {% if topic.video_url %}
+        <div class="my-5">
+          <h5>🎥 Video Explanation:</h5>
+          <div class="ratio ratio-16x9" style="max-width: 960px; margin: auto;">
+            <iframe
+              class="rounded border"
+              src="https://www.youtube.com/embed/{{ topic.video_url|slice:'-11:' }}"
+              allowfullscreen
+              style="min-height: 480px;">
+            </iframe>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if topic.show_compiler %}
+        <div class="my-4">
+          <h5>💻 Try it Yourself:</h5>
+          {% include 'academics/coding_langs/compiler.html' %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+
+<!-- Pagination Controls -->
+<div class="text-center mt-5">
+  <nav aria-label="Topic pagination">
+    <ul class="pagination justify-content-center">
+      {% if topics.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ topics.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      {% endif %}
+
+      {% for num in topics.paginator.page_range %}
+        {% if topics.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > topics.number|add:'-3' and num < topics.number|add:'3' %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if topics.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ topics.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+<hr>
+<h3 class="mt-5 text-center">🧠 Quick Quiz</h3>
+
+<!-- Progress Bar -->
+<div class="progress my-3">
+  <div id="quiz-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+</div>
+
+<p id="quiz-score" class="mb-3 fw-bold fs-5 text-center">Score: 0/{{ questions_page|length }}</p>
+
+<form id="quiz-form">
+  {% csrf_token %}
+  {% for q in questions_page %}
+    <div class="question-card mb-4 p-4 shadow rounded question-block" {% if not forloop.first %}style="display:none"{% endif %}>
+      <p><strong>{{ forloop.counter }}. {{ q.text }}</strong></p>
+
+      <div class="option-group mt-3">
+        <div class="option-box form-check">
+          <input type="radio" name="q{{ q.id }}" value="1" id="q{{ q.id }}1" class="form-check-input">
+          <label class="form-check-label" for="q{{ q.id }}1">{{ q.option1 }}</label>
+        </div>
+
+        <div class="option-box form-check">
+          <input type="radio" name="q{{ q.id }}" value="2" id="q{{ q.id }}2" class="form-check-input">
+          <label class="form-check-label" for="q{{ q.id }}2">{{ q.option2 }}</label>
+        </div>
+
+        {% if q.option3 %}
+        <div class="option-box form-check">
+          <input type="radio" name="q{{ q.id }}" value="3" id="q{{ q.id }}3" class="form-check-input">
+          <label class="form-check-label" for="q{{ q.id }}3">{{ q.option3 }}</label>
+        </div>
+        {% endif %}
+
+        {% if q.option4 %}
+        <div class="option-box form-check">
+          <input type="radio" name="q{{ q.id }}" value="4" id="q{{ q.id }}4" class="form-check-input">
+          <label class="form-check-label" for="q{{ q.id }}4">{{ q.option4 }}</label>
+        </div>
+        {% endif %}
+      </div>
+
+      <span class="correct-answer d-none">{{ q.correct_option }}</span>
+      <button type="button" class="submit-question btn btn-primary mt-3">Submit</button>
+    </div>
+  {% endfor %}
+</form>
+
+<h1 class="final_one text-center mt-4"></h1>
+
+<style>
+.option-box input[type="radio"] {
+    display: none; /* hide actual radio button */
+}
+
+.option-box label {
+    display: block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-box label:hover {
+    background: #e9ecef;
+}
+
+.option-box input[type="radio"]:checked + label {
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+    font-weight: bold;
+    background: #f1f5fb;
+}
+
+</style>
+
+
+<!-- Pagination Controls -->
+<div class="text-center mt-5">
+  <nav aria-label="Topic pagination">
+    <ul class="pagination justify-content-center">
+      {% if topics.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ topics.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      {% endif %}
+
+      {% for num in topics.paginator.page_range %}
+        {% if topics.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > topics.number|add:'-3' and num < topics.number|add:'3' %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if topics.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ topics.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+<script>
+$(document).ready(function(){
+    let score = 0;
+    let total = $(".question-block").length;
+    let answered = {};
+    let currentIndex = 0;
+
+    function updateProgress() {
+        let percent = ((currentIndex) / total) * 100;
+        $("#quiz-progress").animate({width:percent+"%"}, 400);
+    }
+
+    $(".submit-question").click(function(){
+        let $block = $(this).closest(".question-block");
+        let correct = $block.find(".correct-answer").text().trim();
+        let $selectedInput = $block.find("input[type=radio]:checked");
+        let selected = $selectedInput.val();
+        let qId = $selectedInput.attr("name");
+
+        if(!selected){
+            alert("Please select an answer before submitting.");
+            return;
+        }
+
+        if(answered[qId]){
+            alert("You have already submitted this question.");
+            return;
+        }
+
+        // Highlight correct/wrong
+        if(String(selected) === String(correct)){
+            $selectedInput.next("label").css({"color":"green","font-weight":"bold"});
+            score++;
+        } else {
+            $selectedInput.next("label").css({"color":"red","font-weight":"bold"});
+            $block.find("input[value='" + correct + "']").next("label").css({"color":"green","font-weight":"bold"});
+        }
+
+        answered[qId] = true;
+
+        // Disable inputs & button
+        $block.find("input[type=radio]").prop("disabled", true);
+        $(this).prop("disabled", true);
+
+        // Update score & progress
+        $("#quiz-score").text("Score: " + score + "/" + total);
+        currentIndex++;
+        updateProgress();
+
+        // Show next question
+        setTimeout(function(){
+            $block.fadeOut(300, function(){
+                let $next = $block.next(".question-block");
+                if($next.length){
+                    $next.fadeIn(400);
+                } else {
+                    $(".final_one").html(
+                        "🎉 Congratulations! You completed the quiz.<br>" +
+                        "Your Score: " + score + "/" + total
+                    ).css({"color":"blue","text-align":"center"});
+                    $("#quiz-score").hide();
+                    $("#quiz-progress").hide();
+                }
+            });
+        }, 800);
+    });
+});
+</script>
+{%  endblock %}

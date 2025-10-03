@@ -1,0 +1,121 @@
+ {% extends 'academics/base.html' %}
+{% block body %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Practice Problems</h2>
+
+  <!-- Filter + Search Form -->
+  <form method="get" action="{% url 'problem_list' %}" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label for="tag" class="form-label">Topic</label>
+      <select class="form-select" name="tag" id="tag">
+        <option value="">All Topics</option>
+        {% for tag in tags %}
+          <option value="{{ tag.name }}" {% if tag.name == selected_tag %}selected{% endif %}>
+            {{ tag.name|title }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="difficulty" class="form-label">Difficulty</label>
+      <select class="form-select" name="difficulty" id="difficulty">
+        <option value="">All Levels</option>
+        {% for letter, level in difficulties %}
+          <option value="{{ letter }}" {% if letter == selected_diff %}selected{% endif %}>
+            {{ level }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="search" class="form-label">Search by Title</label>
+      <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary w-100">Apply</button>
+    </div>
+  </form>
+
+  <!-- Problems List -->
+<div class="list-group">
+  {% for q in page_obj %}
+    <div class="list-group-item">
+      <div class="d-flex justify-content-between align-items-center">
+  <h5 class="mb-1 mb-sm-0">
+    {% comment %} {{ forloop.counter|add:page_obj.start_index|add:"-1" }}. {% endcomment %}
+    {{ q.question_number }}.
+    <a href="{% url 'problem_detail' q.id %}">{{ q.title }}</a>
+  </h5>
+
+  <div class="d-flex gap-2">
+    <span class="badge 
+      {% if q.difficulty == 'E' %}bg-success
+      {% elif q.difficulty == 'M' %}bg-warning text-dark
+      {% else %}bg-danger
+      {% endif %}">
+      {% if q.difficulty == 'E' %}Easy
+      {% elif q.difficulty == 'M' %}Medium
+      {% else %}Hard
+      {% endif %}
+    </span>
+
+    {% if q.id in solved_ids %}
+      <span class="badge bg-primary">Solved</span>
+    {% endif %}
+  </div>
+</div>
+
+
+
+      </h5>
+      <small class="text-muted">Tags:
+        {% for t in q.tags.all %}
+          <span class="text-success">{{ t.name }}</span>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </small>
+    </div>
+  {% empty %}
+    <div class="list-group-item text-center text-muted">No problems found.</div>
+  {% endfor %}
+  
+
+</div>
+
+
+  <!-- Pagination -->
+<div class="row mt-4">
+  <div class="col-md-6 offset-md-3 d-flex justify-content-center">
+    <ul class="pagination">
+
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?{{ query_string }}{% if query_string %}&{% endif %}page={{ page_obj.previous_page_number }}">
+            Previous
+          </a>
+        </li>
+      {% endif %}
+
+      <li class="page-item active">
+        <a class="page-link" href="?{{ query_string }}{% if query_string %}&{% endif %}page={{ page_obj.number }}">
+          {{ page_obj.number }}
+        </a>
+      </li>
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?{{ query_string }}{% if query_string %}&{% endif %}page={{ page_obj.next_page_number }}">
+            Next
+          </a>
+        </li>
+      {% endif %}
+
+    </ul>
+  </div>
+</div>
+
+
+
+{% endblock %}

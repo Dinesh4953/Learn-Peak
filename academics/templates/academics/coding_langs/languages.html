@@ -1,0 +1,17 @@
+{% extends "academics/base.html" %}
+{% block body %}
+<div class="container py-5">
+  <h2 class="text-primary">Available Programming Languages</h2>
+  <ul class="list-group mt-4">
+    <li class="list-group-item">
+      <a href="{% url 'python_language' %}">Python</a>
+    </li>
+    {% comment %} <li class="list-group-item">
+      <a href="{% url 'java_course' %}">Java</a>
+    </li> {% endcomment %}
+    {% comment %} <li class="list-group-item">
+      <a href="{% url 'c_course' %}">C</a>
+    </li> {% endcomment %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'academics/base.html' %}
+{% block body %}
+
+<div class="container mt-5">
+    <h2 class="mb-4">✅ Solved Problems</h2>
+
+    {% if solved_problems %}
+        <ul class="list-group">
+            {% for prob in solved_problems %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="{% url 'problem_detail_solved' prob.id %}" class="fw-bold">
+                            {{ prob.title }}
+                        </a>
+                        <small class="text-muted ms-2">
+                            (Contest {{ prob.contest_id }}{{ prob.index }})
+                        </small>
+                    </div>
+                    <span class="badge 
+                        {% if prob.difficulty == 'E' %}bg-success
+                        {% elif prob.difficulty == 'M' %}bg-warning text-dark
+                        {% else %}bg-danger
+                        {% endif %}">
+                        {% if prob.difficulty == 'E' %}Easy
+                        {% elif prob.difficulty == 'M' %}Medium
+                        {% else %}Hard
+                        {% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            You haven’t solved any problems yet. Go try some!
+        </div>
+    {% endif %}
+
+    <a href="{% url 'profile' %}" class="btn btn-secondary mt-3">← Back to Profile</a>
+</div>
+
+{% endblock %}

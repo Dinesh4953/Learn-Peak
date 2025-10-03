@@ -1,0 +1,52 @@
+{% extends 'academics/base.html' %}
+{% block body %}
+<div class="container mt-5">
+  <h2>{{ problem.title }}</h2>
+
+  <!-- 🔹 Difficulty Badge -->
+  <p>
+    <span class="badge 
+      {% if problem.difficulty == 'E' %}bg-success
+      {% elif problem.difficulty == 'M' %}bg-warning text-dark
+      {% else %}bg-danger
+      {% endif %}">
+      {% if problem.difficulty == 'E' %}Easy
+      {% elif problem.difficulty == 'M' %}Medium
+      {% else %}Hard
+      {% endif %}
+    </span>
+
+    <!-- ✅ Solved Badge -->
+    {% if user.is_authenticated and problem.id in solved_ids %}
+      <span class="badge bg-info text-dark ms-2">Solved ✅</span>
+    {% endif %}
+  </p>
+
+  <hr>
+
+  <!-- 🧾 Problem Description -->
+  <div class="problem-description">
+    {{ problem.question_text|safe }}
+  </div>
+
+  <hr>
+
+  <!-- 🔖 Tags -->
+  <p><strong>Tags:</strong>
+    {% for tag in problem.tags.all %}
+      <span class="text-success">{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+
+  <!-- 🚀 Solve on Codeforces -->
+  <div class="mt-4">
+    <a href="https://codeforces.com/contest/{{ problem.contest_id }}/my" 
+       target="_blank" class="btn btn-outline-primary">
+      Show My Solution 
+    </a>
+  </div>
+
+  <!-- 🔙 Back -->
+  <a href="{% url 'problem_list' %}" class="btn btn-secondary mt-3">← Back to List</a>
+</div>
+{% endblock %}

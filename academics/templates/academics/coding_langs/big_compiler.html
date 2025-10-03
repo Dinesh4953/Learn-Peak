@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MultiCode Compiler</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    textarea.code-editor {
+      font-size: 1.25rem;
+      height: 400px;
+      width: 100%;
+      font-family: monospace;
+      padding: 15px;
+      border-radius: 0.5rem;
+    }
+    pre.output-box {
+      font-size: 1.2rem;
+      background-color: #212529;
+      color: #fff;
+      padding: 20px;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+    }
+    .btn-run {
+      font-size: 1.25rem;
+      padding: 0.75rem 3rem;
+    }
+    h2 { font-size: 2.5rem; }
+  </style>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</head>
+<body>
+
+<div class="container py-5">
+  <h2 class="text-primary mb-5 text-center">MultiCode Compiler</h2>
+
+  <div class="card shadow-lg">
+    <div class="card-body p-5">
+
+      <form method="post" action="{% url 'run_code_big' %}">
+        {% csrf_token %}
+
+        <!-- Language selector -->
+        <div class="col-md-3">
+  <label for="language" class="form-label">Select Language</label>
+  <select class="form-select" name="language" id="language">
+    {% for lang, label in language_labels.items %}
+      <option value="{{ lang }}" {% if lang == active_language %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+        {% comment %} <!-- Code editor -->
+        <div class="mb-4">
+          <label for="code" class="form-label fw-bold">Write your code:</label>
+<pre><code class="language-{{ active_language }}">{{ code|default:"" }}</code></pre>
+        </div> {% endcomment %}
+
+
+        <!-- Code editor -->
+ <div class="mb-4">
+          <label for="code" class="form-label fw-bold">Write your code:</label>
+          <div id="editor" style="height:400px; width:100%;">{{ code }}</div> 
+          <input type="hidden" name="code" id="code_input">
+         </div>
+        </div> 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.1/ace.js"></script>
+
+
+{% comment %} <script> 
+   // Initialize Ace Editor 
+   const DEFAULT_CODE = {{ DEFAULT_CODE|safe }};
+  const initialLang = "{{ active_language }}";
+    var editor = ace.edit("editor"); 
+    editor.setTheme("ace/theme/monokai"); 
+    editor.session.setMode("ace/mode/{{ active_language }}"); 
+    editor.setOptions({ fontSize: "16px", showPrintMargin: false }); 
+    // Copy code to hidden input on form submit 
+    document.querySelector("form").addEventListener("submit", function(){ 
+        document.getElementById("code_input").value = editor.getValue(); 
+    });
+         document.getElementById("language").addEventListener("change", function() { 
+            const lang = this.value;
+             editor.setValue(DEFAULT_CODE[lang] || "", 1); // 1 = move cursor to start 
+             editor.session.setMode("ace/mode/" + lang); // updates syntax highlighting
+              });
+</script> {% endcomment %}
+
+<script>
+  // Make sure DEFAULT_CODE is available from Django context
+  const DEFAULT_CODE = {{ DEFAULT_CODE|safe }};
+  const initialLang = "{{ active_language }}";
+
+  // Initialize Ace Editor
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/monokai");
+  editor.session.setMode("ace/mode/" + initialLang);
+  editor.setOptions({ fontSize: "16px", showPrintMargin: false });
+
+  // Start with whatever backend passed (no forced default code)
+  editor.setValue("{{ code|escapejs }}", 1);
+
+  // Copy code to hidden input on form submit
+  document.querySelector("form").addEventListener("submit", function () {
+    document.getElementById("code_input").value = editor.getValue();
+  });
+
+  // Change default code and syntax highlighting when language changes
+  document.getElementById("language").addEventListener("change", function () {
+    const lang = this.value;
+    editor.setValue(DEFAULT_CODE[lang] || "", 1); // set default code on language change
+    editor.session.setMode("ace/mode/" + lang);   // update syntax highlighting
+  });
+</script>
+
+
+
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-success btn-run">Run Code</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  {% if output %}
+  <div class="mt-5">
+    <h5 class="text-secondary fw-bold">Output:</h5>
+    <pre class="output-box">{{ output }}</pre>
+  </div>
+  {% endif %}
+
+</div>
+
+</body>
+</html>
