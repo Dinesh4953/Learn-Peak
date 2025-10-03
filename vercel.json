@@ -3,14 +3,21 @@
   "builds": [
     {
       "src": "campus_bridge/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.12.7",
-        "maxLambdaSize": "50mb"
-      }
+      "use": "@vercel/python"
+    },
+    {
+      "src": "staticfiles/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "campus_bridge/wsgi.py" }
+    {
+      "src": "/static/(.*)",
+      "dest": "/staticfiles/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "campus_bridge/wsgi.py"
+    }
   ]
 }
