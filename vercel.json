@@ -4,13 +4,13 @@
     {
       "src": "campus_bridge/wsgi.py",
       "use": "@vercel/python",
-      "config": { "runtime": "python3.11" }
+      "config": {
+        "runtime": "python3.11",
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "campus_bridge/wsgi.py"
-    }
+    { "src": "/(.*)", "dest": "campus_bridge/wsgi.py" }
   ]
 }
