@@ -86,19 +86,26 @@ WSGI_APPLICATION = "campus_bridge.wsgi.application"
 #     }
 # }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'db.ewrnbmricovphhyuhlfr.supabase.co',
-        'PORT': '5432',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'DINESH@2006',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "DINESH@2006",  # You can remove this once you use DATABASE_URL env
+        "HOST": "db.ewrnbmricovphhyuhlfr.supabase.co",
+        "PORT": "5432",
+        "OPTIONS": {
+            "sslmode": "require",  # ensures SSL connection
+        },
     }
 }
 
+# Override with DATABASE_URL from Vercel environment variables if present
 if os.environ.get("DATABASE_URL"):
-    DATABASES["default"] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
-
+    DATABASES["default"] = dj_database_url.parse(
+        os.environ.get("DATABASE_URL"), 
+        conn_max_age=600,  # persistent connections
+        ssl_require=True
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
