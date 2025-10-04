@@ -85,18 +85,25 @@ WSGI_APPLICATION = "campus_bridge.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "postgres",
+#         "USER": "postgres",
+#         "PASSWORD": "DINESH@2006",  # You can remove this once you use DATABASE_URL env
+#         "HOST": "db.ewrnbmricovphhyuhlfr.supabase.co",
+#         "PORT": "5432",
+#         "OPTIONS": {
+#             "sslmode": "require",  # ensures SSL connection
+#         },
+#     }
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "DINESH@2006",  # You can remove this once you use DATABASE_URL env
-        "HOST": "db.ewrnbmricovphhyuhlfr.supabase.co",
-        "PORT": "5432",
-        "OPTIONS": {
-            "sslmode": "require",  # ensures SSL connection
-        },
-    }
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,       # Enables persistent connections
+        ssl_require=True        # Enforces SSL for Supabase
+    )
 }
 
 # Override with DATABASE_URL from Vercel environment variables if present
