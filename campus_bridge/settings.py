@@ -17,12 +17,28 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-from supabase import create_client
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+# from supabase import create_client
+# SUPABASE_URL = os.getenv("SUPABASE_URL")
+# SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'DINESH@2006',  # your actual password
+#         'HOST': 'db.ewrnbmricovphhyuhlfr.supabase.co',
+#         'PORT': '5432',
+#     }
+# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgres:DINESH%402006@db.ewrnbmricovphhyuhlfr.supabase.co:5432/postgres',
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -30,7 +46,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 SECRET_KEY = "django-insecure-1zd-()-(7g%ujzdsq+xrh5#p@$ahp**u)w3i81q1h_6&!xrmi3"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*", ".vercel.app", "localhost", "127.0.0.1"]
 
@@ -52,6 +68,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -103,21 +120,21 @@ WSGI_APPLICATION = "campus_bridge.wsgi.application"
 #         },
 #     }
 # }
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,       # Enables persistent connections
-        ssl_require=True        # Enforces SSL for Supabase
-    )
-}
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=os.environ.get("DATABASE_URL"),
+#         conn_max_age=600,       # Enables persistent connections
+#         ssl_require=True        # Enforces SSL for Supabase
+#     )
+# }
 
 # Override with DATABASE_URL from Vercel environment variables if present
-if os.environ.get("DATABASE_URL"):
-    DATABASES["default"] = dj_database_url.parse(
-        os.environ.get("DATABASE_URL"), 
-        conn_max_age=600,  # persistent connections
-        ssl_require=True
-    )
+# if os.environ.get("DATABASE_URL"):
+#     DATABASES["default"] = dj_database_url.parse(
+#         os.environ.get("DATABASE_URL"), 
+#         conn_max_age=600,  # persistent connections
+#         ssl_require=True
+#     )
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
