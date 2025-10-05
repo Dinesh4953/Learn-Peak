@@ -22,26 +22,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 # supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'PASSWORD': 'DINESH@2006',  # your actual password
-#         'HOST': 'db.ewrnbmricovphhyuhlfr.supabase.co',
-#         'PORT': '5432',
-#     }
-# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'DINESH@2006',  # your actual password
+        'HOST': 'db.ewrnbmricovphhyuhlfr.supabase.co',
+        'PORT': '5432',
     }
 }
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
