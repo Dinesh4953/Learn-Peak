@@ -33,11 +33,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #     }
 # }
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:DINESH%402006@db.ewrnbmricovphhyuhlfr.supabase.co:5432/postgres',
-        conn_max_age=600,
-        ssl_require=True
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
+    }
 }
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
